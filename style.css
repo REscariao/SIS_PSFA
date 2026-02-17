@@ -1,0 +1,756 @@
+/* Configurações Gerais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ocupa toda a altura da tela */
+    background-color: #f3f4f6;
+}
+
+/* NAVBAR */
+.navbar {
+    background-color: #ffffff;
+    height: 70px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid #c5a059; /* Toque dourado paroquial */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.nav-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    text-decoration: none;
+    font-weight: 700;
+    color: #1f2937;
+    font-size: 1.3rem;
+}
+
+.logo span { color: #c5a059; }
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+/* CONTENT (CENTRALIZADO) */
+.content {
+    flex: 1; /* Empurra o footer para baixo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card h3 { margin-bottom: 15px; color: #111827; }
+.card p { margin-bottom: 25px; color: #6b7280; }
+
+/* BOTÕES */
+.btn {
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.btn-primary { background: #81693b; color: white; }
+.btn-secondary { background: #c5a059; color: white; }
+
+/* FOOTER */
+.footer {
+    background-color: #ffffff;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid #e5e7eb;
+    color: #9ca3af;
+    font-size: 0.85rem;
+}
+
+/* Atualização para suportar mais cards de forma elegante */
+.card-container {
+    display: grid;
+    /* Aqui ele cria 3 colunas se houver espaço, ou menos em telas menores */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+.card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.icon {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: #1f2937;
+}
+
+.card p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+/* Estilo para link ativo na navbar */
+.nav-links a.active {
+    color: #c5a059;
+    border-bottom: 2px solid #c5a059;
+}
+
+/* ESTILOS ESPECÍFICOS DO FORMULÁRIO */
+.form-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 800px;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.form-header h2 {
+    color: #111827;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.form-header p {
+    color: #6b7280;
+}
+
+.form-section {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form-section label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #374151;
+}
+
+.form-section input {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-section input:focus {
+    outline: none;
+    border-color: #c5a059;
+    box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1);
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-section {
+    flex: 1;
+}
+
+.flex-3 { flex: 3 !important; }
+.flex-1 { flex: 1 !important; }
+
+.form-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    color: #4b5563;
+    cursor: pointer;
+}
+
+.btn-outline:hover {
+
+
+    
+    background: #f9fafb;
+}
+
+.btn-primary {
+    border: none;
+    cursor: pointer;
+    flex: 1;
+}
+
+/* Responsividade do Formulário */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    .form-card {
+        padding: 20px;
+    }
+}
+
+/* Linha divisória discreta dentro do formulário */
+.form-divider {
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+    margin: 20px 0 30px 0;
+}
+
+/* Garante que em telas muito pequenas o formulário não quebre */
+@media (max-width: 850px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    .flex-3, .flex-1 {
+        flex: none !important;
+        width: 100%;
+    }
+}
+/* Estilização para Select e Textarea */
+.form-select, textarea {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: white;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.form-select:focus, textarea:focus {
+    outline: none;
+    border-color: #c5a059;
+    box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1);
+}
+
+textarea {
+    resize: vertical; /* Permite aumentar apenas a altura */
+    font-family: inherit;
+}
+/* Tabela Moderna */
+.full-width {
+    max-width: 1100px !important;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.modern-table th {
+    background-color: #f9fafb;
+    padding: 15px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #6b7280;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.modern-table td {
+    padding: 15px;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 0.95rem;
+}
+
+/* Badges de Status */
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-success { background: #def7ec; color: #03543f; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-danger { background: #fde8e8; color: #9b1c1c; }
+
+/* Cabeçalho da Tabela com Botão */
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left !important;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    border: 1px solid #d1d5db;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.btn-sm:hover {
+    background: #f3f4f6;
+}
+/* Layout da Equipe de Trabalho */
+.equipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.equipe-group {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    transition: 0.2s;
+}
+
+.equipe-group:hover {
+    border-color: #c5a059;
+    background: #fff;
+}
+
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 10px;
+}
+
+.group-header h4 {
+    color: #111827;
+    font-size: 1.1rem;
+}
+
+.count {
+    font-size: 0.75rem;
+    background: #e5e7eb;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.member-list {
+    list-style: none;
+    margin-bottom: 15px;
+}
+
+.member-list li {
+    font-size: 0.9rem;
+    padding: 8px 0;
+    border-bottom: 1px dashed #edf2f7;
+    color: #4b5563;
+}
+
+.member-list li:last-child {
+    border-bottom: none;
+}
+
+.member-list li strong {
+    color: #1f2937;
+}
+
+/* Botão de texto discreto */
+.btn-text {
+    background: none;
+    border: none;
+    color: #c5a059;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 5px 0;
+}
+
+.btn-text:hover {
+    text-decoration: underline;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Estilização da Timeline de Ciclos */
+.ciclos-timeline {
+    position: relative;
+    padding: 20px 0;
+    margin-top: 30px;
+}
+
+/* Linha vertical conectando os ciclos */
+.ciclos-timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background-color: #e5e7eb;
+}
+
+.ciclo-item {
+    position: relative;
+    padding-left: 60px;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+/* Círculo numerado */
+.ciclo-marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border: 2px solid #e5e7eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #6b7280;
+    z-index: 1;
+    transition: 0.3s;
+}
+
+/* Destaque para o ciclo ativo */
+.ciclo-item.active .ciclo-marker {
+    border-color: #c5a059;
+    color: #c5a059;
+    box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1);
+}
+
+.ciclo-content {
+    background: #f9fafb;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.ciclo-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.ciclo-info h4 {
+    font-size: 1.1rem;
+    color: #111827;
+}
+
+.ciclo-info span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+.ciclo-content p {
+    font-size: 0.95rem;
+    color: #4b5563;
+    margin-bottom: 15px;
+}
+/* Ajustes para o Gerenciador de Ciclos */
+.inline-form {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.align-self-end {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 2px;
+}
+
+.btn-delete {
+    color: #ef4444;
+    border-color: #fee2e2;
+}
+
+.btn-delete:hover {
+    background: #fee2e2;
+}
+
+/* Badge estilizado para tabela */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Estilos para a Trajetória */
+.resumo-casal {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 5px solid #c5a059;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.info-principal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.info-principal h3 {
+    margin-bottom: 0;
+    font-size: 1.4rem;
+    color: #1e293b;
+}
+
+.badge-vivencia {
+    background: #1e293b;
+    color: #c5a059;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    border: 1px solid #c5a059;
+}
+
+.search-box input {
+    padding: 10px 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    width: 250px;
+    font-size: 0.9rem;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #c5a059;
+}
+
+/* Destaque para o ano na tabela */
+.modern-table td strong {
+    color: #c5a059;
+    font-size: 1.1rem;
+}
+/* Estilos Específicos para a Página de Login */
+.login-page {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-box {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.login-header {
+    margin-bottom: 30px;
+}
+
+.login-logo {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.login-header h1 {
+    font-size: 1.5rem;
+    color: #1e293b;
+    margin-bottom: 5px;
+}
+
+.login-header p {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 0.85rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: #c5a059;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-block {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+}
+
+.login-footer {
+    margin-top: 20px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+/* Ajuste de responsividade para telas pequenas */
+@media (max-width: 480px) {
+    .login-box {
+        padding: 30px 20px;
+    }
+}
+/* Estilo base para todos os Selects */
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #c5a059;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    /* Remove a seta padrão para estilizar (opcional) */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 15px) center;
+}
+
+/* Efeito ao focar no Select */
+select:focus {
+    border-color: #c5a059;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    outline: none;
+}
+
+/* Estilo para as opções dentro do Select */
+select option {
+    padding: 10px;
+    background-color: #fff;
+    color: #333;
+}
+
+/* Ajuste para quando o select estiver desabilitado ou carregando */
+select:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+    color: #999;
+}
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #fff;
+    color: #c0392b; /* Vermelho sóbrio */
+    border: 1px solid #c0392b;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-logout:hover {
+    background-color: #c0392b;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(192, 57, 43, 0.2);
+}
+
+/* Se for usar dentro da Navbar */
+.nav-links li .btn-logout {
+    margin-left: 15px;
+}

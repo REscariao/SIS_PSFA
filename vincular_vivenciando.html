@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vincular Encontrista - Sistema Paroquial</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">⛪ Minha<span>Paróquia</span></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="secretaria.html">Secretaria</a></li>
+                    <li><a href="vivenciando.html">Vivenciando</a></li>
+                    <li><a href="#" class="active">Vincular</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="form-card">
+            <header class="form-header">
+                <h2>Vincular Casal ao Encontro</h2>
+                <p>Selecione o encontro, o casal e defina o círculo (cor) de participação.</p>
+            </header>
+
+            <form action="api/salvar_encontrista.php" method="POST" class="main-form">
+                
+                <div class="form-row">
+                    <div class="form-section flex-1">
+                        <label>Selecione o Encontro</label>
+                        <select name="id_encontro" id="select_encontro" required>
+                            <option value="">Carregando encontros...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-section flex-1">
+                        <label>Casal Encontrista</label>
+                        <select name="id_casal" id="select_casal" required>
+                            <option value="">Carregando casais...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-section flex-1">
+                        <label>Círculo (Cor)</label>
+                        <select name="id_circulo" id="select_circulo">
+                            <option value="">Carregando círculos...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-buttons" style="margin-top: 20px;">
+                    <a href="vivenciando.html" class="btn btn-outline" style="text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;">Voltar</a>
+                    <button type="submit" class="btn btn-primary">Confirmar Inscrição</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        async function carregarDropdowns() {
+            try {
+                const [resEncontros, resCasais, resCirculos] = await Promise.all([
+                    fetch('api/listar_encontros_api.php'),
+                    fetch('api/listar_casais_api.php'),
+                    fetch('api/listar_circulos_api.php')
+                ]);
+
+                const encontros = await resEncontros.json();
+                const casais = await resCasais.json();
+                const circulos = await resCirculos.json();
+
+                const selectEnc = document.getElementById('select_encontro');
+                const selectCas = document.getElementById('select_casal');
+                const selectCir = document.getElementById('select_circulo');
+
+                // Popular Encontros
+                selectEnc.innerHTML = '<option value="">Escolha o encontro</option>';
+                encontros.forEach(e => {
+                    selectEnc.innerHTML += `<option value="${e.id}">${e.nome_encontro}</option>`;
+                });
+
+                // Popular Casais
+                selectCas.innerHTML = '<option value="">Escolha o casal</option>';
+                casais.forEach(c => {
+                    selectCas.innerHTML += `<option value="${c.id}">${c.ele_nome} e ${c.ela_nome}</option>`;
+                });
+
+                // Popular Círculos (Cores)
+                selectCir.innerHTML = '<option value="">Sem círculo definido</option>';
+                circulos.forEach(ci => {
+                    selectCir.innerHTML += `<option value="${ci.id}">${ci.nome_circulo}</option>`;
+                });
+
+            } catch (error) {
+                console.error("Erro ao carregar dados para os selects:", error);
+                alert("Erro ao carregar dados do servidor. Verifique as APIs.");
+            }
+        }
+
+        window.onload = carregarDropdowns;
+    </script>
+</body>
+</html>

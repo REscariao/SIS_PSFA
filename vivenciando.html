@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vivenciando - Sistema Paroquial</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .badge-circulo {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">⛪ Minha<span>Paróquia</span></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="secretaria.html">Secretaria</a></li>
+                    <li><a href="encontros.html">Encontro</a></li>
+                    <li><a href="#" class="active">Vivenciando</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="form-card full-width">
+            <header class="form-header header-flex">
+                <div>
+                    <h2>Casais Vivenciando</h2>
+                    <p id="encontro-titulo">Carregando informações do encontro...</p>
+                </div>
+                <div class="actions">
+                    <a href="vincular_vivenciando.html" class="btn btn-secondary" style="text-decoration: none;">
+                        + Novo Encontrista
+                    </a>
+                </div>
+            </header>
+
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Casal Encontrista</th>
+                            <th>Apelidos</th>
+                            <th style="text-align: center;">Círculo / Cor</th>
+                            <th style="text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-vivenciando">
+                        <tr>
+                            <td colspan="4" class="empty-state">Buscando casais encontristas...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 - Gestão Paroquial Inteligente | ECC Santo Antônio - Patos-PB</p>
+    </footer>
+
+    <script>
+        async function carregarVivenciando() {
+            const tbody = document.getElementById('tabela-vivenciando');
+            const titulo = document.getElementById('encontro-titulo');
+
+            try {
+                const response = await fetch('api/listar_vivenciando_api.php');
+                const dados = await response.json();
+
+                if (dados.erro) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="empty-state" style="color: red;">Erro: ${dados.erro}</td></tr>`;
+                    return;
+                }
+
+                if (dados.length === 0) {
+                    titulo.innerText = "Nenhum encontro ativo para o ano de 2026.";
+                    tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Nenhum casal vivenciando cadastrado para este ano.</td></tr>`;
+                    return;
+                }
+
+                titulo.innerText = `Encontristas registrados para o ${dados[0].nome_encontro}`;
+                tbody.innerHTML = ''; 
+
+                dados.forEach(casal => {
+                    const tr = document.createElement('tr');
+                    
+                    const corDisplay = casal.cor_nome 
+                        ? `<span class="badge-circulo">${casal.cor_nome}</span>` 
+                        : `<span style="color: #999; font-size: 0.8rem;">Não definido</span>`;
+
+                    tr.innerHTML = `
+                        <td>${casal.ele_nome} e ${casal.ela_nome}</td>
+                        <td><strong>${casal.ele_apelido} e ${casal.ela_apelido}</strong></td>
+                        <td style="text-align: center;">${corDisplay}</td>
+                        <td style="text-align: center;">
+                            <button class="btn-sm" onclick="removerCasal(${casal.cod_encontro}, ${casal.cod_membro}, '${casal.ele_apelido}')" style="color: red; background: none; border: 1px solid red; border-radius: 4px; cursor: pointer; padding: 2px 8px;">Remover</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+                tbody.innerHTML = `<tr><td colspan="4" class="empty-state" style="color: red;">Erro ao carregar os dados.</td></tr>`;
+            }
+        }
+
+        async function removerCasal(codEnc, codMem, nomes) {
+            if (confirm(`Tem certeza que deseja remover o casal ${nomes} deste encontro?`)) {
+                try {
+                    const response = await fetch(`api/remover_encontrista.php?cod_encontro=${codEnc}&cod_membro=${codMem}`);
+                    const resultado = await response.json();
+
+                    if (resultado.success) {
+                        alert('Casal removido com sucesso!');
+                        carregarVivenciando();
+                    } else {
+                        alert('Erro ao remover: ' + resultado.error);
+                    }
+                } catch (error) {
+                    alert('Erro na comunicação com o servidor.');
+                }
+            }
+        }
+
+        window.onload = carregarVivenciando;
+    </script>
+</body>
+</html>
