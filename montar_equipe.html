@@ -46,53 +46,72 @@
                             <option value="Coordenador Geral">Coordenador Geral</option>
                             <option value="Sala">Sala</option>
                             <option value="Compras">Compras</option>
-                            <option value="Cafe e minimercado">Café e minimercado</option>
+                            <option value="Café e minimercado">Café e minimercado</option>
                             <option value="Ordem e Limpeza">Ordem e Limpeza</option>
                             <option value="Acolhida">Acolhida</option>
                             <option value="Secretaria">Secretária</option>
                             <option value="Cozinha">Cozinha</option>
                             <option value="Liturgia e vigilia">Liturgia e vigília</option>
-                            <option value="visitacao">Visitação</option>
-                            <option value="Circulos">Circulos</option>
+                            <option value="Visitação">Visitação</option>
+                            <option value="Círculos">Círculos</option>
                         </select>
                     </div>
-                <div class="form-section flex-1">
-                    <label>Função / Cargo</label>
-                    <select name="funcao" required> <option value="">Selecione uma função</option>
-                        <option value="Coordenador">Coordenador</option>
-                        <option value="Membro">Membro</option>
-                    </select>
-                </div>
+                    <div class="form-section flex-1">
+                        <label>Função / Cargo</label>
+                        <select name="funcao" required> 
+                            <option value="">Selecione uma função</option>
+                            <option value="Coordenador">Coordenador</option>
+                            <option value="Membro">Membro</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-primary">Salvar na Equipe</button>
+                    <a href="equipes.html" class="btn btn-secondary">Voltar</a>
                 </div>
             </form>
         </div>
     </main>
 
     <script>
-        // Script para carregar as opções dos Selects via API
         async function carregarDados() {
-            // Busca Encontros
-            const resEncontros = await fetch('api/listar_encontros_api.php');
-            const encontros = await resEncontros.json();
-            const selectEnc = document.getElementById('select_encontro');
-            selectEnc.innerHTML = '<option value="">Escolha um encontro</option>';
-            encontros.forEach(e => {
-                selectEnc.innerHTML += `<option value="${e.id}">${e.nome_encontro} (${e.ano_referencia})</option>`;
-            });
+            try {
+                // 1. Carregar Encontros
+                const resEncontros = await fetch('api/listar_encontros_api.php');
+                const encontros = await resEncontros.json();
+                const selectEnc = document.getElementById('select_encontro');
+                
+                selectEnc.innerHTML = '<option value="">Escolha um encontro</option>';
+                encontros.forEach(e => {
+                    const option = document.createElement('option');
+                    // Ajustado para as colunas minúsculas do seu SQL: codigo, encontro, periodo
+                    option.value = e.codigo; 
+                    option.textContent = `${e.encontro} (${e.periodo})`;
+                    selectEnc.appendChild(option);
+                });
 
-            // Busca Casais
-            const resCasais = await fetch('api/listar_casais_api.php');
-            const casais = await resCasais.json();
-            const selectCas = document.getElementById('select_casal');
-            selectCas.innerHTML = '<option value="">Escolha um casal</option>';
-            casais.forEach(c => {
-                selectCas.innerHTML += `<option value="${c.id}">${c.ele_nome} & ${c.ela_nome}</option>`;
-            });
+                // 2. Carregar Casais
+                const resCasais = await fetch('api/listar_casais_api.php');
+                const casais = await resCasais.json();
+                const selectCas = document.getElementById('select_casal');
+                
+                selectCas.innerHTML = '<option value="">Escolha um casal</option>';
+                casais.forEach(c => {
+                    const option = document.createElement('option');
+                    // Ajustado para as colunas minúsculas: codigo, ele, ela
+                    option.value = c.codigo; 
+                    option.textContent = `${c.ele} & ${c.ela}`;
+                    selectCas.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+                document.getElementById('select_encontro').innerHTML = '<option>Erro ao carregar</option>';
+                document.getElementById('select_casal').innerHTML = '<option>Erro ao carregar</option>';
+            }
         }
+
         carregarDados();
     </script>
 </body>

@@ -2,7 +2,7 @@
 require_once 'db.php';
 
 try {
-    $stmt = $pdo->query("SELECT * FROM tabela_membros WHERE Ativo = 1 ORDER BY Ele ASC");
+    $stmt = $pdo->query("SELECT * FROM tabela_membros WHERE Ativo = 1 ORDER BY ele ASC");
     $membros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Erro ao listar membros: " . $e->getMessage());
@@ -110,20 +110,20 @@ try {
                     <?php foreach ($membros as $m): ?>
                     <tr class="membro-row">
                         <td class="col-nome">
-                            <strong><?php echo $m['Ele']; ?></strong><br>
-                            <strong><?php echo $m['Ela']; ?></strong>
+                            <strong><?php echo $m['ele']; ?></strong><br>
+                            <strong><?php echo $m['ela']; ?></strong>
                         </td>
                         <td class="col-apelido">
-                            <span class="apelido-tag"><?php echo $m['Apelido_dele'] ?: '-'; ?></span><br>
-                            <span class="apelido-tag" style="margin-top:4px; display:inline-block;"><?php echo $m['Apelido_dela'] ?: '-'; ?></span>
+                            <span class="apelido-tag"><?php echo $m['apelido_dele'] ?: '-'; ?></span><br>
+                            <span class="apelido-tag" style="margin-top:4px; display:inline-block;"><?php echo $m['apelido_dela'] ?: '-'; ?></span>
                         </td>
-                        <td class="col-bairro"><?php echo $m['Bairro']; ?></td>
+                        <td class="col-bairro"><?php echo $m['bairro']; ?></td>
                         <td>
-                            <strong><?php echo $m['Ano_ECC']; ?></strong>
-                            <small style="display:block; color:#777;"><?php echo $m['Pastoral']; ?></small>
+                            <strong><?php echo $m['ano_ecc']; ?></strong>
+                            <small style="display:block; color:#777;"><?php echo $m['pastoral']; ?></small>
                         </td>
                         <td style="text-align: center;">
-                            <a href="editar_membro.php?id=<?php echo $m['Codigo']; ?>" style="text-decoration:none; color:#1a237e; font-weight:bold; font-size: 0.85rem;">✏️ Editar</a>
+                            <a href="editar_membro.php?id=<?php echo $m['codigo']; ?>" style="text-decoration:none; color:#1a237e; font-weight:bold; font-size: 0.85rem;">✏️ Editar</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>

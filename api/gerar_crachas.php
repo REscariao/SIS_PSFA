@@ -1,24 +1,24 @@
 <?php
-// api/gerar_crachas.php
+// api/gerar_crachas.php - Ajustado para HostGator (Linux)
 require_once 'db.php'; 
 
 $id_encontro = $_GET['encontro'] ?? null;
 
-// Busca automática do último se não houver ID
+// Busca automática do último se não houver ID - Padronizado para minúsculas
 if (!$id_encontro) {
-    $stmt = $pdo->query("SELECT Codigo FROM Tabela_Encontros ORDER BY Codigo DESC LIMIT 1");
+    $stmt = $pdo->query("SELECT codigo FROM tabela_encontros ORDER BY codigo DESC LIMIT 1");
     $res = $stmt->fetch(PDO::FETCH_ASSOC);
-    $id_encontro = $res['Codigo'] ?? null;
+    $id_encontro = $res['codigo'] ?? null;
 }
 
-// Busca os dados
-$sql = "SELECT M.Apelido_dele, M.Apelido_dela, C.Circulo AS cor_nome, E.Encontro, E.Periodo
-        FROM Tabela_Encontristas TE 
-        JOIN Tabela_Membros M ON TE.Cod_Membros = M.Codigo 
-        JOIN Tabela_Encontros E ON TE.Cod_Encontro = E.Codigo
-        LEFT JOIN Tabela_Cor_Circulos C ON TE.Cod_Circulo = C.Codigo 
-        WHERE TE.Cod_Encontro = ? 
-        ORDER BY C.Circulo, M.Ele ASC";
+// Busca os dados - Ajustado para os nomes reais das tabelas e colunas minúsculas
+$sql = "SELECT m.apelido_dele, m.apelido_dela, m.ele, m.ela, c.circulo AS cor_nome, e.encontro, e.periodo
+        FROM tabela_encontristas te 
+        JOIN tabela_membros m ON te.cod_membros = m.codigo 
+        JOIN tabela_encontros e ON te.cod_encontro = e.codigo
+        LEFT JOIN tabela_cor_circulos c ON te.cod_circulo = c.codigo 
+        WHERE te.cod_encontro = ? 
+        ORDER BY c.circulo, m.ele ASC";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$id_encontro]);
@@ -43,7 +43,7 @@ function obterHexCor($nomeCor) {
     <link rel="stylesheet" href="../style.css">
     <style>
         /* Estilo para visualização no navegador */
-        body { background-color: #525659; margin: 0; padding: 0; }
+        body { background-color: #525659; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
         .area-impressao {
             display: flex;
@@ -58,20 +58,18 @@ function obterHexCor($nomeCor) {
             height: 297mm;
             background: white;
             display: grid;
-            grid-template-columns: repeat(2, 98mm); /* 2 Colunas */
-            grid-template-rows: repeat(4, 65mm);   /* 4 Linhas = 8 por folha */
+            grid-template-columns: repeat(2, 98mm); 
+            grid-template-rows: repeat(4, 65mm);   
             gap: 4mm;
             padding: 10mm 5mm;
             justify-content: center;
             box-sizing: border-box;
             box-shadow: 0 0 15px rgba(0,0,0,0.3);
             margin-bottom: 20px;
-            /* Evita quebras de página aleatórias */
             page-break-after: always;
             overflow: hidden;
         }
 
-        /* CRACHÁ */
         .cracha { width: 98mm; height: 65mm; display: flex; align-items: center; justify-content: center; position: relative; }
         
         .cont { 
@@ -85,7 +83,6 @@ function obterHexCor($nomeCor) {
             box-sizing: border-box; 
         }
 
-        /* Temas de cores */
         .tema-preto .cont { border-color: #000; color: #000; }
         .tema-preto hr { border-top: 0.7mm solid #000 !important; }
         .tema-preto .titulo-encontro, .tema-preto .corpo, .tema-preto .rodape { color: #000; border-color: #000; }
@@ -103,7 +100,6 @@ function obterHexCor($nomeCor) {
         
         .rodape { padding-top: 4px; text-align: center; font-weight: bold; font-size: 12px; color: #fff; text-transform: uppercase; }
 
-        /* Estilos de Impressão */
         @media print {
             @page { size: A4; margin: 0; }
             .navbar, .footer, .btn-print-float { display: none !important; }
@@ -123,19 +119,6 @@ function obterHexCor($nomeCor) {
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">⛪ Minha<span>Paróquia</span></a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="../index.html">Início</a></li>
-                    <li><a href="../secretaria.html">Secretaria</a></li>
-                    <li><a href="#" class="active">Encontro</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
     <button class="btn-print-float" onclick="window.print()">🖨️ Imprimir Crachás</button>
 
     <main class="area-impressao">
@@ -149,29 +132,35 @@ function obterHexCor($nomeCor) {
                 // Abre nova folha se já imprimiu 8 e ainda tem mais casais
                 if ($i > 0 && $i % 8 == 0): ?>
                     </div><div class="folha-a4">
-                <?php endif; ?>
+                <?php endif; 
+
+                // Lógica para apelidos: Se não houver, usa o primeiro nome
+                $nomeDele = $c['apelido_dele'] ?: explode(' ', $c['ele'])[0];
+                $nomeDela = $c['apelido_dela'] ?: explode(' ', $c['ela'])[0];
+                ?>
 
                 <div class="cracha <?php echo $classeTema; ?>" style="background-color: <?php echo obterHexCor($cor); ?>;">
                     <div class="cont">
                         <div class="topo">
                             <img src="<?php echo $logo; ?>" class="logo-ecc">
                             <div class="titulo-encontro">
-                                <h2><?php echo $c['Encontro']; ?></h2>
-                                <p><?php echo $c['Periodo']; ?></p>
+                                <h2><?php echo htmlspecialchars($c['encontro']); ?></h2>
+                                <p><?php echo htmlspecialchars($c['periodo']); ?></p>
                             </div>
                             <hr>
                         </div>
                         <div class="corpo">
-                            <div class="nomes"><?php echo $c['Apelido_dele']; ?> / <?php echo $c['Apelido_dela']; ?></div>
+                            <div class="nomes"><?php echo htmlspecialchars($nomeDele); ?> / <?php echo htmlspecialchars($nomeDela); ?></div>
                         </div>
-                        <div class="rodape">Paróquia de São Francisco de Assis</div>
+                        <div class="rodape">Paróquia de Santo Antônio</div>
                     </div>
                 </div>
             <?php endforeach; ?>
-            </div> <?php else: ?>
-            <div style="background:white; padding: 50px; border-radius: 10px; margin-top: 50px;">
-                <h2>Nenhum casal encontrado para este encontro.</h2>
-                <p>Verifique se os casais foram vinculados corretamente.</p>
+            </div> 
+        <?php else: ?>
+            <div style="background:white; padding: 50px; border-radius: 10px; margin-top: 50px; text-align: center;">
+                <h2>Nenhum encontrista cadastrado.</h2>
+                <p>Verifique o vínculo de casais para este encontro.</p>
             </div>
         <?php endif; ?>
     </main>

@@ -1,4 +1,5 @@
 <?php
+// Ajustado para o padrão de letras minúsculas do Linux/HostGator
 require_once 'db.php'; 
 
 date_default_timezone_set('America/Fortaleza');
@@ -8,10 +9,10 @@ $id_encontro = $_GET['encontro'] ?? null;
 
 try {
     if (!$id_encontro) {
-        // Busca o último encontro baseado no maior Código
-        $stmt_ultimo = $pdo->query("SELECT Codigo FROM Tabela_Encontros ORDER BY Codigo DESC LIMIT 1");
+        // PADRONIZAÇÃO: Mudamos para tabela_encontros e codigo em minúsculo
+        $stmt_ultimo = $pdo->query("SELECT codigo FROM tabela_encontros ORDER BY codigo DESC LIMIT 1");
         $ultimo = $stmt_ultimo->fetch(PDO::FETCH_ASSOC);
-        $id_encontro = $ultimo['Codigo'] ?? null;
+        $id_encontro = $ultimo['codigo'] ?? null;
     }
 
     if (!$id_encontro) {
@@ -19,24 +20,25 @@ try {
     }
 
     // 1. Busca dados do encontro selecionado ou do último
-    $stmt = $pdo->prepare("SELECT * FROM Tabela_Encontros WHERE Codigo = ?");
+    $stmt = $pdo->prepare("SELECT * FROM tabela_encontros WHERE codigo = ?");
     $stmt->execute([$id_encontro]);
     $encontro = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$encontro) die("Erro: Encontro não encontrado.");
 
     // 2. Busca os casais e a cor do seu respectivo círculo
+    // Ajustado para os nomes reais das colunas em minúsculo: ele, ela, fone, bairro, etc.
     $sql = "SELECT 
-                M.Ele AS ele_nome, M.Ela AS ela_nome, 
-                M.Apelido_dele AS ele_apelido, M.Apelido_dela AS ela_apelido,
-                M.Nascimento_dele AS ele_nascimento, M.Nascimento_dela AS ela_nascimento,
-                M.Casamento, M.End_Rua AS endereco, M.Numero, M.Bairro, M.Fone,
-                C.CorHex, C.Circulo AS nome_circulo
-            FROM Tabela_Encontristas TE 
-            JOIN Tabela_Membros M ON TE.Cod_Membros = M.Codigo 
-            LEFT JOIN Tabela_Cor_Circulos C ON TE.Cod_Circulo = C.Codigo
-            WHERE TE.Cod_Encontro = ? 
-            ORDER BY C.Circulo, M.Ele ASC";
+                m.ele AS ele_nome, m.ela AS ela_nome, 
+                m.apelido_dele AS ele_apelido, m.apelido_dela AS ela_apelido,
+                m.nascimento_dele AS ele_nascimento, m.nascimento_dela AS ela_nascimento,
+                m.casamento, m.end_rua AS endereco, m.numero, m.bairro, m.fone,
+                c.cor AS corhex, c.circulo AS nome_circulo
+            FROM tabela_encontristas te 
+            JOIN tabela_membros m ON te.cod_membros = m.codigo 
+            LEFT JOIN tabela_cor_circulos c ON te.cod_circulo = c.codigo
+            WHERE te.cod_encontro = ? 
+            ORDER BY c.circulo, m.ele ASC";
             
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$id_encontro]);
@@ -106,7 +108,7 @@ try {
             body { background: none; }
             .folha-a4 { margin: 0; box-shadow: none; width: 100%; }
             .no-print { display: none; }
-            .destaque-amarelo { 
+            .col-apelido-dinamico { 
                 -webkit-print-color-adjust: exact; 
                 print-color-adjust: exact; 
             }
@@ -129,8 +131,8 @@ try {
             <div class="header-text">
                 <h1>LISTA DE PRESENÇA</h1>
                 <p>ECC - PARÓQUIA DE SANTO ANTÔNIO - PATOS/PB</p>
-                <p><?php echo strtoupper($encontro['Encontro']); ?></p>
-                <p style="font-weight: normal; font-size: 12px;"><?php echo $encontro['Periodo']; ?></p>
+                <p><?php echo htmlspecialchars(strtoupper($encontro['encontro'] ?? '')); ?></p>
+                <p style="font-weight: normal; font-size: 12px;"><?php echo htmlspecialchars($encontro['periodo'] ?? ''); ?></p>
             </div>
         </div>
 
@@ -143,23 +145,23 @@ try {
         </div>
 
         <?php foreach ($encontristas as $c): 
-            $fundo = !empty($c['CorHex']) ? $c['CorHex'] : '#cccccc';
+            $fundo = !empty($c['corhex']) ? $c['corhex'] : '#cccccc';
             $texto = (strtoupper($c['nome_circulo'] ?? '') == 'AMARELO') ? '#5f4b26' : '#ffffff';
         ?>
         <div class="item-casal">
             <div class="casal-row">
                 <div class="col-1">
-                    <div style="font-weight: bold; font-size: 14px; text-transform: uppercase;"><?php echo $c['ele_nome']; ?></div>
-                    <div style="font-weight: bold; font-size: 14px; text-transform: uppercase;"><?php echo $c['ela_nome']; ?></div>
+                    <div style="font-weight: bold; font-size: 14px; text-transform: uppercase;"><?php echo htmlspecialchars($c['ele_nome']); ?></div>
+                    <div style="font-weight: bold; font-size: 14px; text-transform: uppercase;"><?php echo htmlspecialchars($c['ela_nome']); ?></div>
                     <div style="font-size: 10px; margin-top: 4px; color: #81693b;">
-                        <?php echo "{$c['endereco']}, {$c['Numero']} - {$c['Bairro']} | {$c['Fone']}"; ?>
+                        <?php echo htmlspecialchars("{$c['endereco']}, {$c['numero']} - {$c['bairro']} | {$c['fone']}"); ?>
                     </div>
                 </div>
 
                 <div class="col-2 col-apelido-dinamico" style="background-color: <?php echo $fundo; ?> !important; color: <?php echo $texto; ?>;">
-                    <?php echo $c['ele_apelido']; ?><br>
+                    <?php echo htmlspecialchars($c['ele_apelido'] ?: '-'); ?><br>
                     <small style="font-weight:normal; font-size:9px;">e</small><br>
-                    <?php echo $c['ela_apelido']; ?>
+                    <?php echo htmlspecialchars($c['ela_apelido'] ?: '-'); ?>
                 </div>
 
                 <div class="col-3" style="text-align: center; font-size: 11px; display: flex; flex-direction: column; justify-content: center;">
@@ -167,7 +169,7 @@ try {
                     <?php echo $c['ela_nascimento'] ? date('d/m/Y', strtotime($c['ela_nascimento'])) : '--/--/--'; ?>
                 </div>
                 <div class="col-4" style="text-align: center; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                    <?php echo $c['Casamento'] ? date('d/m/Y', strtotime($c['Casamento'])) : '--/--/--'; ?>
+                    <?php echo $c['casamento'] ? date('d/m/Y', strtotime($c['casamento'])) : '--/--/--'; ?>
                 </div>
                 <div class="col-5">
                     <div style="font-size: 7px; font-weight: bold; text-align: center; color: #777;">SEX | SAB | DOM</div>

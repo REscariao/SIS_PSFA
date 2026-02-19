@@ -1,11 +1,15 @@
 <?php
 require_once 'db.php';
-header('Content-Type: application/json');
+
+header('Content-Type: application/json; charset=utf-8');
 
 try {
-    // Selecionamos o Código e o nome do encontro
-    $stmt = $pdo->query("SELECT Codigo as id, Encontro as nome_encontro, Periodo as ano_referencia FROM Tabela_Encontros");
-    echo json_encode($stmt->fetchAll());
+    // Usando a tabela em minúsculo para compatibilidade com Linux/HostGator
+    $stmt = $pdo->query("SELECT codigo, encontro, periodo, tema FROM tabela_encontros ORDER BY codigo DESC");
+    $encontros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode($encontros);
 } catch (PDOException $e) {
-    echo json_encode(['error' => $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode(['erro' => $e->getMessage()]);
 }

@@ -1,16 +1,18 @@
 <?php
 require_once 'db.php'; 
 
+// Ajuste de fuso horário para o Nordeste
 date_default_timezone_set('America/Fortaleza');
 
 // Verifica se um ID foi passado, caso contrário, busca o último evento cadastrado
 $id_encontro = $_GET['encontro'] ?? null;
 
 try {
+    // PADRONIZAÇÃO: Nomes de tabelas e colunas em minúsculas para HostGator (Linux)
     if (!$id_encontro) {
-        $stmt_ultimo = $pdo->query("SELECT Codigo FROM Tabela_Encontros ORDER BY Codigo DESC LIMIT 1");
+        $stmt_ultimo = $pdo->query("SELECT codigo FROM tabela_encontros ORDER BY codigo DESC LIMIT 1");
         $ultimo = $stmt_ultimo->fetch(PDO::FETCH_ASSOC);
-        $id_encontro = $ultimo['Codigo'] ?? null;
+        $id_encontro = $ultimo['codigo'] ?? null;
     }
 
     if (!$id_encontro) {
@@ -18,28 +20,29 @@ try {
     }
 
     // 1. Busca dados do encontro
-    $stmt = $pdo->prepare("SELECT * FROM Tabela_Encontros WHERE Codigo = ?");
+    $stmt = $pdo->prepare("SELECT * FROM tabela_encontros WHERE codigo = ?");
     $stmt->execute([$id_encontro]);
     $encontro = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // 2. Busca a relação de encontristas (casais que estão fazendo o encontro)
+    // 2. Busca a relação de encontristas
+    // Nota: 'cor' é onde guardamos o Hexadecimal na sua tabela_cor_circulos
     $sql = "SELECT 
-                M.Ele AS ele_nome, M.Ela AS ela_nome, 
-                M.Apelido_dele AS ele_apelido, M.Apelido_dela AS ela_apelido,
-                M.Fone, M.Bairro,
-                C.Circulo AS nome_circulo, C.CorHex
-            FROM Tabela_Encontristas TE 
-            JOIN Tabela_Membros M ON TE.Cod_Membros = M.Codigo 
-            LEFT JOIN Tabela_Cor_Circulos C ON TE.Cod_Circulo = C.Codigo
-            WHERE TE.Cod_Encontro = ? 
-            ORDER BY M.Ele ASC";
+                m.ele AS ele_nome, m.ela AS ela_nome, 
+                m.apelido_dele AS ele_apelido, m.apelido_dela AS ela_apelido,
+                m.fone, m.bairro,
+                c.circulo AS nome_circulo, c.cor AS cor_hex
+            FROM tabela_encontristas te 
+            JOIN tabela_membros m ON te.cod_membros = m.codigo 
+            LEFT JOIN tabela_cor_circulos c ON te.cod_circulo = c.codigo
+            WHERE te.cod_encontro = ? 
+            ORDER BY m.ele ASC";
             
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$id_encontro]);
     $encontristas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    die("Erro: " . $e->getMessage());
+    die("Erro técnico no banco de dados: " . $e->getMessage());
 }
 ?>
 
@@ -47,7 +50,7 @@ try {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Relação de Encontristas - <?php echo $encontro['Encontro']; ?></title>
+    <title>Relação de Encontristas - <?php echo htmlspecialchars($encontro['encontro'] ?? ''); ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         @page { size: A4; margin: 10mm; }
@@ -67,7 +70,6 @@ try {
         .header h1 { color: #81693b; margin: 0; font-size: 24px; text-transform: uppercase; }
         .header p { color: #555; margin: 5px 0; font-size: 14px; font-weight: bold; }
 
-        /* Estilo da Tabela */
         .relacao-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .relacao-table th { 
             background: #f8f9fa; color: #81693b; text-align: left; 
@@ -80,6 +82,7 @@ try {
             padding: 4px 10px; border-radius: 12px; font-size: 10px; 
             font-weight: bold; text-transform: uppercase; color: white;
             display: inline-block;
+            text-shadow: 0px 1px 2px rgba(0,0,0,0.3); /* Melhora leitura em cores claras */
         }
 
         .contato-info { font-size: 12px; color: #666; }
@@ -105,7 +108,7 @@ try {
     <div class="folha-a4">
         <div class="header">
             <h1>Relação Geral de Encontristas</h1>
-            <p><?php echo strtoupper($encontro['Encontro']); ?> - <?php echo $encontro['Periodo']; ?></p>
+            <p><?php echo strtoupper($encontro['encontro'] ?? 'Sem Título'); ?> - <?php echo $encontro['periodo'] ?? ''; ?></p>
             <p>Paróquia de Santo Antônio - Patos/PB</p>
         </div>
 
@@ -123,22 +126,22 @@ try {
                 <?php 
                 $cont = 1;
                 foreach ($encontristas as $c): 
-                    $cor_fundo = !empty($c['CorHex']) ? $c['CorHex'] : '#999';
+                    $cor_fundo = !empty($c['cor_hex']) ? $c['cor_hex'] : '#999';
                 ?>
                 <tr>
                     <td><?php echo str_pad($cont++, 2, "0", STR_PAD_LEFT); ?></td>
                     <td>
-                        <strong><?php echo $c['ele_nome']; ?></strong><br>
-                        <strong><?php echo $c['ela_nome']; ?></strong>
+                        <strong><?php echo htmlspecialchars($c['ele_nome']); ?></strong><br>
+                        <strong><?php echo htmlspecialchars($c['ela_nome']); ?></strong>
                     </td>
-                    <td><?php echo $c['ele_apelido']; ?> & <?php echo $c['ela_apelido']; ?></td>
+                    <td><?php echo htmlspecialchars($c['ele_apelido'] ?: '-'); ?> & <?php echo htmlspecialchars($c['ela_apelido'] ?: '-'); ?></td>
                     <td>
                         <span class="circulo-badge" style="background-color: <?php echo $cor_fundo; ?>;">
-                            <?php echo $c['nome_circulo'] ?? 'Não definido'; ?>
+                            <?php echo htmlspecialchars($c['nome_circulo'] ?? 'Não definido'); ?>
                         </span>
                     </td>
                     <td class="contato-info">
-                        <?php echo $c['Fone']; ?>
+                        <?php echo htmlspecialchars($c['fone'] ?: 'N/A'); ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

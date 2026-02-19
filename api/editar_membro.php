@@ -7,9 +7,9 @@ if (!$id) {
     exit;
 }
 
-// 1. Busca os dados atuais do membro
+// 1. Busca os dados atuais do membro - Ajustado para letras minúsculas
 try {
-    $stmt = $pdo->prepare("SELECT * FROM tabela_membros WHERE Codigo = ?");
+    $stmt = $pdo->prepare("SELECT * FROM tabela_membros WHERE codigo = ?");
     $stmt->execute([$id]);
     $m = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -21,9 +21,9 @@ try {
 // 2. Processa a atualização quando o formulário é enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Mantém as fotos atuais caso não sejam enviadas novas
-        $foto_ele = $m['Foto_ele'];
-        $foto_ela = $m['Foto_ela'];
+        // Mantém as fotos atuais caso não sejam enviadas novas - Ajustado para minúsculas
+        $foto_ele = $m['foto_ele'];
+        $foto_ela = $m['foto_ela'];
 
         // Upload Foto DELE
         if (!empty($_FILES['f_ele']['name'])) {
@@ -43,13 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        // SQL baseada na tabela e colunas em minúsculo
+        // Corrigido 'aasamento' para 'casamento' conforme estrutura do banco
         $sql = "UPDATE tabela_membros SET 
-                Ele = :ele, Apelido_dele = :ap_ele, Foto_ele = :foto_ele, Nascimento_dele = :nasc_ele,
-                Ela = :ela, Apelido_dela = :ap_ela, Foto_ela = :foto_ela, Nascimento_dela = :nasc_ela,
-                Casamento = :casam, End_Rua = :rua, Numero = :num, Bairro = :bairro, Paroquia = :paroquia,
-                Fone = :fone, Email = :email, Ano_ECC = :ano, Pastoral = :pastoral, 
-                Modalidade = :modalidade
-                WHERE Codigo = :id";
+                ele = :ele, apelido_dele = :ap_ele, foto_ele = :foto_ele, nascimento_dele = :nasc_ele,
+                ela = :ela, apelido_dela = :ap_ela, foto_ela = :foto_ela, nascimento_dela = :nasc_ela,
+                casamento = :casam, end_rua = :rua, numero = :num, bairro = :bairro, paroquia = :paroquia,
+                fone = :fone, email = :email, ano_ecc = :ano, pastoral = :pastoral, 
+                modalidade = :modalidade
+                WHERE codigo = :id";
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
@@ -102,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-card full-width">
             <header class="form-header">
                 <h2>Editar Cadastro do Casal</h2>
-                <p>Atualize as informações de <strong><?php echo htmlspecialchars($m['Ele']); ?> & <?php echo htmlspecialchars($m['Ela']); ?></strong></p>
+                <p>Atualize as informações de <strong><?php echo htmlspecialchars($m['ele']); ?> & <?php echo htmlspecialchars($m['ela']); ?></strong></p>
             </header>
 
             <form method="POST" enctype="multipart/form-data"> 
@@ -110,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="section-title">Informações Dele</div>
                     <div class="form-group" style="grid-column: span 2;">
                         <div class="photo-container">
-                            <img src="<?php echo $m['Foto_ele'] ? '../uploads/'.$m['Foto_ele'] : '../img/avatar_m.png'; ?>" class="photo-preview">
+                            <img src="<?php echo $m['foto_ele'] ? '../uploads/'.$m['foto_ele'] : '../img/avatar_m.jpg'; ?>" class="photo-preview">
                             <div>
                                 <label>Alterar Foto Dele</label>
                                 <input type="file" name="f_ele" accept="image/*">
@@ -119,21 +121,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="form-group">
                         <label>Nome Completo (Ele)</label>
-                        <input type="text" name="ele" class="form-control" value="<?php echo htmlspecialchars($m['Ele']); ?>" required>
+                        <input type="text" name="ele" class="form-control" value="<?php echo htmlspecialchars($m['ele']); ?>" required>
                     </div>
                     <div class="form-group">
                         <label>Apelido (Ele)</label>
-                        <input type="text" name="ap_ele" class="form-control" value="<?php echo htmlspecialchars($m['Apelido_dele']); ?>">
+                        <input type="text" name="ap_ele" class="form-control" value="<?php echo htmlspecialchars($m['apelido_dele']); ?>">
                     </div>
                     <div class="form-group">
                         <label>Data de Nascimento (Ele)</label>
-                        <input type="date" name="nasc_ele" class="form-control" value="<?php echo $m['Nascimento_dele']; ?>">
+                        <input type="date" name="nasc_ele" class="form-control" value="<?php echo $m['nascimento_dele']; ?>">
                     </div>
 
                     <div class="section-title">Informações Dela</div>
                     <div class="form-group" style="grid-column: span 2;">
                         <div class="photo-container">
-                            <img src="<?php echo $m['Foto_ela'] ? '../uploads/'.$m['Foto_ela'] : '../img/avatar_f.png'; ?>" class="photo-preview">
+                            <img src="<?php echo $m['foto_ela'] ? '../uploads/'.$m['foto_ela'] : '../img/avatar_f.png'; ?>" class="photo-preview">
                             <div>
                                 <label>Alterar Foto Dela</label>
                                 <input type="file" name="f_ela" accept="image/*">
@@ -142,60 +144,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="form-group">
                         <label>Nome Completo (Ela)</label>
-                        <input type="text" name="ela" class="form-control" value="<?php echo htmlspecialchars($m['Ela']); ?>" required>
+                        <input type="text" name="ela" class="form-control" value="<?php echo htmlspecialchars($m['ela']); ?>" required>
                     </div>
                     <div class="form-group">
                         <label>Apelido (Ela)</label>
-                        <input type="text" name="ap_ela" class="form-control" value="<?php echo htmlspecialchars($m['Apelido_dela']); ?>">
+                        <input type="text" name="ap_ela" class="form-control" value="<?php echo htmlspecialchars($m['apelido_dela']); ?>">
                     </div>
                     <div class="form-group">
                         <label>Data de Nascimento (Ela)</label>
-                        <input type="date" name="nasc_ela" class="form-control" value="<?php echo $m['Nascimento_dela']; ?>">
+                        <input type="date" name="nasc_ela" class="form-control" value="<?php echo $m['nascimento_dela']; ?>">
                     </div>
 
                     <div class="section-title">Endereço e Contato</div>
                     <div class="form-group">
                         <label>Rua</label>
-                        <input type="text" name="rua" class="form-control" value="<?php echo htmlspecialchars($m['End_Rua']); ?>">
+                        <input type="text" name="rua" class="form-control" value="<?php echo htmlspecialchars($m['end_rua']); ?>">
                     </div>
                     <div class="form-group">
                         <label>Número / Bairro</label>
                         <div style="display: flex; gap: 10px;">
-                            <input type="text" name="num" placeholder="Nº" style="width: 30%;" class="form-control" value="<?php echo htmlspecialchars($m['Numero']); ?>">
-                            <input type="text" name="bairro" placeholder="Bairro" style="width: 70%;" class="form-control" value="<?php echo htmlspecialchars($m['Bairro']); ?>">
+                            <input type="text" name="num" placeholder="Nº" style="width: 30%;" class="form-control" value="<?php echo htmlspecialchars($m['numero']); ?>">
+                            <input type="text" name="bairro" placeholder="Bairro" style="width: 70%;" class="form-control" value="<?php echo htmlspecialchars($m['bairro']); ?>">
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Paróquia</label>
-                        <input type="text" name="paroquia" class="form-control" value="<?php echo htmlspecialchars($m['Paroquia'] ?? ''); ?>" placeholder="Nome da Paróquia">
+                        <input type="text" name="paroquia" class="form-control" value="<?php echo htmlspecialchars($m['paroquia'] ?? ''); ?>" placeholder="Nome da Paróquia">
                     </div>
                     <div class="form-group">
                         <label>Telefone / WhatsApp</label>
-                        <input type="text" name="fone" class="form-control" value="<?php echo htmlspecialchars($m['Fone']); ?>">
+                        <input type="text" name="fone" class="form-control" value="<?php echo htmlspecialchars($m['fone']); ?>">
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($m['Email']); ?>">
+                        <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($m['email']); ?>">
                     </div>
                     <div class="form-group">
                         <label>Data de Casamento</label>
-                        <input type="date" name="casamento" class="form-control" value="<?php echo $m['Casamento']; ?>">
+                        <input type="date" name="casamento" class="form-control" value="<?php echo $m['casamento']; ?>">
                     </div>
 
                     <div class="section-title">Informações do ECC</div>
                     <div class="form-group">
                         <label>Ano do ECC</label>
-                        <input type="text" name="ano_ecc" class="form-control" value="<?php echo htmlspecialchars($m['Ano_ECC']); ?>">
+                        <input type="text" name="ano_ecc" class="form-control" value="<?php echo htmlspecialchars($m['ano_ecc']); ?>">
                     </div>
                     <div class="form-group">
                         <label>Pastoral</label>
-                        <input type="text" name="pastoral" class="form-control" value="<?php echo htmlspecialchars($m['Pastoral']); ?>">
+                        <input type="text" name="pastoral" class="form-control" value="<?php echo htmlspecialchars($m['pastoral']); ?>">
                     </div>
                     <div class="form-group">
                         <label>Modalidade</label>
                         <select name="modalidade" class="form-control">
-                            <option value="Desmembramento" <?php echo ($m['Modalidade'] == 'Desmembramento') ? 'selected' : ''; ?>>Desmembramento</option>
-                            <option value="Tranferencia" <?php echo ($m['Modalidade'] == 'Tranferencia') ? 'selected' : ''; ?>>Transferência</option>
+                            <option value="Desmembramento" <?php echo ($m['modalidade'] == 'Desmembramento') ? 'selected' : ''; ?>>Desmembramento</option>
+                            <option value="Tranferencia" <?php echo ($m['modalidade'] == 'Tranferencia') ? 'selected' : ''; ?>>Transferência</option>
                         </select>
                     </div>
                 </div>
