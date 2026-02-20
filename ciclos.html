@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Círculos do Encontro - ECC</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Correção para os botões não passarem para o lado direito */
+        .filter-group { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 30px; 
+            flex-wrap: wrap; 
+            justify-content: flex-start;
+        }
+
+        .filter-group .btn { 
+            min-width: 120px; 
+            flex: 1; 
+            max-width: 200px;
+            height: 45px;
+            font-size: 0.9rem;
+        }
+
+        .badge-circulo { 
+            background: #81693b; 
+            color: white; 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .nome-casal { font-weight: 600; color: #1f2937; }
+
+        /* Ajuste para tabelas em ecrãs pequenos */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-width: 600px) {
+            .filter-group .btn {
+                min-width: calc(50% - 10px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">⛪ Minha<span>Paróquia</span></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="dashboard.html">Início</a></li>
+                    <li><a href="trajetoria.html">Trajetória</a></li>
+                    <li><a href="ciclos.html" class="active">Círculos</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="form-card full-width">
+            <header class="form-header">
+                <h2>Círculos Formados</h2>
+                <p>Histórico de casais participantes por círculo e encontro.</p>
+            </header>
+
+            <div class="filter-group">
+                <button onclick="carregarCiclos(1, this)" class="btn btn-outline">1º Círculo</button>
+                <button onclick="carregarCiclos(2, this)" class="btn btn-outline">2º Círculo</button>
+                <button onclick="carregarCiclos(3, this)" class="btn btn-outline">3º Círculo</button>
+                <button onclick="carregarCiclos('todos', this)" class="btn btn-primary">Ver Todos</button>
+            </div>
+
+            <div class="table-container">
+                <table class="modern-table" id="tabela-ciclos">
+                    <thead>
+                        <tr>
+                            <th>Nº Círculo</th>
+                            <th>Casal</th>
+                            <th>Encontro</th>
+                            <th>Ano/Período</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="text-align: center; margin-top: 40px; padding: 20px; color: #6b7280; font-size: 0.8rem;">
+        <p>&copy; 2026 - ECC Santo Antônio - Patos-PB</p>
+    </footer>
+
+    <script>
+        async function carregarCiclos(filtro, btn) {
+            // Gerir as cores dos botões (Active state)
+            if (btn) {
+                document.querySelectorAll('.filter-group .btn').forEach(b => {
+                    b.classList.remove('btn-primary'); 
+                    b.classList.add('btn-outline');
+                });
+                btn.classList.add('btn-primary'); 
+                btn.classList.remove('btn-outline');
+            }
+
+            const tbody = document.querySelector('#tabela-ciclos tbody');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px;">Buscando dados da trajetória...</td></tr>';
+
+            try {
+                // Chamada à API (usando letras minúsculas conforme combinado)
+                const res = await fetch(`api/listar_ciclos_api.php?filtro=${filtro}`);
+                
+                if (!res.ok) throw new Error("Erro na resposta da API");
+                
+                const dados = await res.json();
+                tbody.innerHTML = '';
+
+                if (!dados || dados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Nenhum registro encontrado para este critério.</td></tr>';
+                    return;
+                }
+
+                // Renderização usando as chaves minúsculas do JSON
+                dados.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><span class="badge-circulo">${item.cod_circulo}º Círculo</span></td>
+                        <td class="nome-casal">${item.ele} & ${item.ela}</td>
+                        <td>${item.encontro}</td>
+                        <td><strong>${item.periodo}</strong></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (e) {
+                console.error("Erro no fetch:", e);
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red; padding: 20px;">Não foi possível carregar os dados. Verifique a ligação.</td></tr>';
+            }
+        }
+
+        // Inicia a página listando tudo
+        window.addEventListener('DOMContentLoaded', () => {
+            const btnTodos = document.querySelector('.btn-primary');
+            carregarCiclos('todos', btnTodos);
+        });
+    </script>
+</body>
+</html>
