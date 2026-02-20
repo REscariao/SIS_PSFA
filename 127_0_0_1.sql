@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Tempo de geração: 19/02/2026 às 08:05
+-- Host: localhost
+-- Tempo de geração: 20/02/2026 às 10:35
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -26,31 +26,48 @@ USE `banco_ecc_santoantonio`;
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `tabela_circulos`
---
--- Criação: 17/02/2026 às 21:39
+-- Estrutura para tabela `funcoes_ecc`
 --
 
-CREATE TABLE `tabela_circulos` (
-  `Cod_Encontro` int(11) NOT NULL,
-  `Cod_Circulo` int(11) NOT NULL,
-  `Coordenador` varchar(100) DEFAULT NULL
+CREATE TABLE `funcoes_ecc` (
+  `id` int(11) NOT NULL,
+  `nome_funcao` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- RELACIONAMENTOS PARA TABELAS `tabela_circulos`:
---   `Cod_Encontro`
---       `tabela_encontros` -> `Codigo`
---   `Cod_Circulo`
---       `tabela_cor_circulos` -> `Codigo`
+-- Despejando dados para a tabela `funcoes_ecc`
 --
+
+INSERT INTO `funcoes_ecc` (`id`, `nome_funcao`) VALUES
+(8, 'Acolhida'),
+(4, 'Cafezinho e Minimercado'),
+(11, 'Círculos'),
+(3, 'Compras'),
+(1, 'Coordenador Geral'),
+(7, 'Cozinha'),
+(9, 'Liturgia e Vigília'),
+(5, 'Ordem e Limpeza'),
+(2, 'Sala'),
+(6, 'Secretaria'),
+(10, 'Visitação');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `tabela_ciclos`
+--
+
+CREATE TABLE `tabela_ciclos` (
+  `cod_encontro` int(11) DEFAULT NULL,
+  `cod_circulo` int(11) DEFAULT NULL,
+  `cod_membro` int(11) DEFAULT NULL,
+  `coordenador` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
 -- Estrutura para tabela `tabela_cor_circulos`
---
--- Criação: 17/02/2026 às 21:39
 --
 
 CREATE TABLE `tabela_cor_circulos` (
@@ -60,16 +77,10 @@ CREATE TABLE `tabela_cor_circulos` (
   `Ativo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- RELACIONAMENTOS PARA TABELAS `tabela_cor_circulos`:
---
-
 -- --------------------------------------------------------
 
 --
 -- Estrutura para tabela `tabela_encontristas`
---
--- Criação: 17/02/2026 às 21:39
 --
 
 CREATE TABLE `tabela_encontristas` (
@@ -81,60 +92,41 @@ CREATE TABLE `tabela_encontristas` (
   `Imprimir` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- RELACIONAMENTOS PARA TABELAS `tabela_encontristas`:
---   `Cod_Membros`
---       `tabela_membros` -> `Codigo`
---   `Cod_Encontro`
---       `tabela_encontros` -> `Codigo`
---
-
 -- --------------------------------------------------------
 
 --
 -- Estrutura para tabela `tabela_encontros`
 --
--- Criação: 17/02/2026 às 21:39
---
 
 CREATE TABLE `tabela_encontros` (
-  `Codigo` int(11) NOT NULL,
-  `Etapa` int(11) DEFAULT 1,
-  `Encontro` varchar(100) DEFAULT NULL,
-  `Periodo` varchar(100) DEFAULT NULL,
-  `Tema` varchar(255) DEFAULT NULL,
-  `Observacao` text DEFAULT NULL
+  `codigo` int(11) NOT NULL,
+  `etapa` int(11) DEFAULT 1,
+  `encontro` varchar(100) DEFAULT NULL,
+  `periodo` varchar(100) DEFAULT NULL,
+  `tema` varchar(255) DEFAULT NULL,
+  `observacao` text DEFAULT NULL,
+  `ano_evento` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- RELACIONAMENTOS PARA TABELAS `tabela_encontros`:
+-- Despejando dados para a tabela `tabela_encontros`
 --
 
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `tabela_equipes_funcoes`
---
--- Criação: 17/02/2026 às 21:39
---
-
-CREATE TABLE `tabela_equipes_funcoes` (
-  `Codigo` int(11) NOT NULL,
-  `Equipe` varchar(100) DEFAULT NULL,
-  `Funcao` varchar(100) DEFAULT NULL,
-  `N_ordem` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- RELACIONAMENTOS PARA TABELAS `tabela_equipes_funcoes`:
---
+INSERT INTO `tabela_encontros` (`codigo`, `etapa`, `encontro`, `periodo`, `tema`, `observacao`, `ano_evento`) VALUES
+(1, 1, 'I - Encontro de Casais com Cristo', '24, 25 e 26 de Abril de 2026', 'Paróquia de São Francisco de Assis', 'Testes', 0),
+(2, 1, NULL, 'Março/2025', 'XIX Encontro de Casais', NULL, 2025),
+(3, 1, NULL, 'Outubro/2025', 'XX Encontro de Casais', NULL, 2025),
+(4, 1, NULL, 'Maio/2026', 'XXI Encontro de Casais', NULL, 2026),
+(5, 1, NULL, 'Novembro/2026', 'XXII Encontro de Casais', NULL, 2026),
+(6, 1, NULL, 'Abril/2027', 'XXIII Encontro de Casais', NULL, 2027),
+(7, 1, NULL, 'Setembro/2027', 'XXIV Encontro de Casais', NULL, 2027),
+(8, 1, NULL, 'Março/2028', 'XXV Encontro de Casais', NULL, 2028),
+(9, 1, NULL, 'Agosto/2028', 'XXVI Encontro de Casais', NULL, 2028);
 
 -- --------------------------------------------------------
 
 --
 -- Estrutura para tabela `tabela_equipes_trabalho`
---
--- Criação: 17/02/2026 às 21:39
 --
 
 CREATE TABLE `tabela_equipes_trabalho` (
@@ -146,59 +138,69 @@ CREATE TABLE `tabela_equipes_trabalho` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- RELACIONAMENTOS PARA TABELAS `tabela_equipes_trabalho`:
---   `Cod_Encontro`
---       `tabela_encontros` -> `Codigo`
---   `Cod_Membros`
---       `tabela_membros` -> `Codigo`
+-- Despejando dados para a tabela `tabela_equipes_trabalho`
 --
+
+INSERT INTO `tabela_equipes_trabalho` (`Cod_Encontro`, `Cod_Membros`, `Equipe`, `Funcao`, `Imprimir`) VALUES
+(1, 1, 'Cozinha', 'Membro', 1),
+(1, 55, 'Cafezinho e Minimercado', 'Coordenador', 1),
+(1, 56, 'Coordenador Geral', 'Coordenador', 1),
+(2, 1, 'Cozinha', 'Coordenador', 1),
+(3, 1, 'Coordenador Geral', 'Coordenador', 1),
+(3, 2, 'Secretaria', 'Coordenador', 1),
+(3, 3, 'Acolhida', 'Membro', 1),
+(3, 4, 'Cozinha', 'Membro', 1),
+(4, 1, 'Liturgia e Vigília', 'Membro', 1),
+(4, 2, 'Cozinha', 'Membro', 1),
+(4, 3, 'Cozinha', 'Coordenador', 1),
+(5, 1, 'Liturgia e Vigília', 'Coordenador', 1),
+(5, 2, 'Acolhida', 'Coordenador', 1),
+(6, 1, 'Compras', 'Membro', 1),
+(6, 4, 'Secretaria', 'Membro', 1),
+(7, 1, 'Compras', 'Coordenador', 1),
+(7, 2, 'Sala', 'Coordenador', 1),
+(8, 1, 'Coordenador Geral', 'Coordenador', 1),
+(8, 3, 'Montagem/Som', 'Coordenador', 1);
 
 -- --------------------------------------------------------
 
 --
 -- Estrutura para tabela `tabela_membros`
 --
--- Criação: 17/02/2026 às 21:53
--- Última atualização: 17/02/2026 às 21:55
---
 
 CREATE TABLE `tabela_membros` (
-  `Codigo` int(11) NOT NULL,
-  `Ele` varchar(100) DEFAULT NULL,
-  `Apelido_dele` varchar(50) DEFAULT NULL,
-  `Foto_ele` varchar(255) DEFAULT NULL,
-  `Nascimento_dele` date DEFAULT NULL,
-  `Ela` varchar(100) DEFAULT NULL,
-  `Apelido_dela` varchar(50) DEFAULT NULL,
-  `Foto_ela` varchar(255) DEFAULT NULL,
-  `Nascimento_dela` date DEFAULT NULL,
-  `Casamento` date DEFAULT NULL,
-  `Ano_ECC` varchar(100) DEFAULT NULL,
-  `Pastoral` varchar(100) DEFAULT NULL,
+  `codigo` int(11) NOT NULL,
+  `ele` varchar(100) DEFAULT NULL,
+  `apelido_dele` varchar(50) DEFAULT NULL,
+  `foto_ele` varchar(255) DEFAULT NULL,
+  `nascimento_dele` date DEFAULT NULL,
+  `ela` varchar(100) DEFAULT NULL,
+  `apelido_dela` varchar(50) DEFAULT NULL,
+  `foto_ela` varchar(255) DEFAULT NULL,
+  `nascimento_dela` date DEFAULT NULL,
+  `casamento` date DEFAULT NULL,
+  `ano_ECC` varchar(100) DEFAULT NULL,
+  `pastoral` varchar(100) DEFAULT NULL,
   `paroquia` varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `Modalidade` varchar(50) DEFAULT NULL,
-  `End_Rua` varchar(255) DEFAULT NULL,
-  `Numero` varchar(20) DEFAULT NULL,
-  `Complemento` varchar(100) DEFAULT NULL,
-  `Bairro` varchar(100) DEFAULT NULL,
-  `Cidade` varchar(100) DEFAULT NULL,
-  `Uf` char(2) DEFAULT 'PB',
-  `Fone` varchar(20) DEFAULT NULL,
-  `Ativo` tinyint(1) DEFAULT 1,
-  `Correspondencia` tinyint(1) DEFAULT NULL,
-  `Email` varchar(100) DEFAULT NULL,
-  `Status` varchar(50) DEFAULT NULL
+  `modalidade` varchar(50) DEFAULT NULL,
+  `end_rua` varchar(255) DEFAULT NULL,
+  `numero` varchar(20) DEFAULT NULL,
+  `complemento` varchar(100) DEFAULT NULL,
+  `bairro` varchar(100) DEFAULT NULL,
+  `cidade` varchar(100) DEFAULT NULL,
+  `uf` char(2) DEFAULT 'PB',
+  `fone` varchar(20) DEFAULT NULL,
+  `ativo` tinyint(1) DEFAULT 1,
+  `correspondencia` tinyint(1) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- RELACIONAMENTOS PARA TABELAS `tabela_membros`:
---
 
 --
 -- Despejando dados para a tabela `tabela_membros`
 --
 
-INSERT INTO `tabela_membros` (`Codigo`, `Ele`, `Apelido_dele`, `Foto_ele`, `Nascimento_dele`, `Ela`, `Apelido_dela`, `Foto_ela`, `Nascimento_dela`, `Casamento`, `Ano_ECC`, `Pastoral`, `paroquia`, `Modalidade`, `End_Rua`, `Numero`, `Complemento`, `Bairro`, `Cidade`, `Uf`, `Fone`, `Ativo`, `Correspondencia`, `Email`, `Status`) VALUES
+INSERT INTO `tabela_membros` (`codigo`, `ele`, `apelido_dele`, `foto_ele`, `nascimento_dele`, `ela`, `apelido_dela`, `foto_ela`, `nascimento_dela`, `casamento`, `ano_ECC`, `pastoral`, `paroquia`, `modalidade`, `end_rua`, `numero`, `complemento`, `bairro`, `cidade`, `uf`, `fone`, `ativo`, `correspondencia`, `email`, `status`) VALUES
 (1, 'Erlon Crispim Xavier', 'Nego Erlon', NULL, NULL, 'Maria Alexsandra de Souza Crispim', 'Sandra', NULL, NULL, NULL, '12 ECC ano 2003', 'Pastoral Família', NULL, 'Desmembramento', NULL, NULL, NULL, NULL, NULL, 'PB', NULL, 1, NULL, NULL, NULL),
 (2, 'Alan Morais Ribeiro', 'Alan', NULL, NULL, 'Maria Istefane Paulo Marques', 'Istefane', NULL, NULL, NULL, '2017', NULL, NULL, 'Desmembramento', NULL, NULL, NULL, NULL, NULL, 'PB', NULL, 1, NULL, NULL, NULL),
 (3, 'Alexsandro Lacerda de Caldas', 'Sande', NULL, NULL, 'Lidia Nara Gusmão de Moura Lacerda Caldas', 'Nara', NULL, NULL, NULL, '16ª 2007', 'Pastoral Familiar', NULL, 'Desmembramento', NULL, NULL, NULL, NULL, NULL, 'PB', NULL, 1, NULL, NULL, NULL),
@@ -276,18 +278,28 @@ INSERT INTO `tabela_membros` (`Codigo`, `Ele`, `Apelido_dele`, `Foto_ele`, `Nasc
 (75, 'Marcelo Justino de Medeiros', 'Marcelo', NULL, NULL, 'Ethyenne Almeida de A. Medeiros', NULL, NULL, NULL, NULL, '2012', NULL, NULL, 'Tranferencia', NULL, NULL, NULL, NULL, NULL, 'PB', NULL, 1, NULL, NULL, NULL),
 (76, 'Jos Claudio', NULL, NULL, NULL, 'Raphaela Oliveira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Tranferencia', NULL, NULL, NULL, NULL, NULL, 'PB', NULL, 1, NULL, NULL, NULL),
 (77, 'Stanislau', NULL, NULL, NULL, 'Elaine', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Tranferencia', NULL, NULL, NULL, NULL, NULL, 'PB', NULL, 1, NULL, NULL, NULL),
-(78, 'Carlos', NULL, NULL, NULL, 'Monica', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Tranferencia', NULL, NULL, NULL, NULL, NULL, 'PB', NULL, 1, NULL, NULL, NULL);
+(78, 'Carlos', NULL, NULL, NULL, 'Monica', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Tranferencia', NULL, NULL, NULL, NULL, NULL, 'PB', NULL, 1, NULL, NULL, NULL),
+(79, 'João Silva', NULL, NULL, NULL, 'Maria Silva', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Centro', NULL, 'PB', '(83) 99999-1111', 1, NULL, NULL, NULL),
+(80, 'Carlos Oliveira', NULL, NULL, NULL, 'Ana Oliveira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Belo Horizonte', NULL, 'PB', '(83) 99999-2222', 1, NULL, NULL, NULL),
+(81, 'Ricardo Santos', NULL, NULL, NULL, 'Beatriz Santos', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Jardim Queiroz', NULL, 'PB', '(83) 99999-3333', 1, NULL, NULL, NULL),
+(82, 'Paulo Souza', NULL, NULL, NULL, 'Fernanda Souza', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Noé Trajano', NULL, 'PB', '(83) 99999-4444', 1, NULL, NULL, NULL);
 
 --
 -- Índices para tabelas despejadas
 --
 
 --
--- Índices de tabela `tabela_circulos`
+-- Índices de tabela `funcoes_ecc`
 --
-ALTER TABLE `tabela_circulos`
-  ADD PRIMARY KEY (`Cod_Encontro`,`Cod_Circulo`),
-  ADD KEY `Cod_Circulo` (`Cod_Circulo`);
+ALTER TABLE `funcoes_ecc`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nome_funcao` (`nome_funcao`);
+
+--
+-- Índices de tabela `tabela_ciclos`
+--
+ALTER TABLE `tabela_ciclos`
+  ADD KEY `fk_membro_ciclo` (`cod_membro`);
 
 --
 -- Índices de tabela `tabela_cor_circulos`
@@ -307,13 +319,7 @@ ALTER TABLE `tabela_encontristas`
 -- Índices de tabela `tabela_encontros`
 --
 ALTER TABLE `tabela_encontros`
-  ADD PRIMARY KEY (`Codigo`);
-
---
--- Índices de tabela `tabela_equipes_funcoes`
---
-ALTER TABLE `tabela_equipes_funcoes`
-  ADD PRIMARY KEY (`Codigo`);
+  ADD PRIMARY KEY (`codigo`);
 
 --
 -- Índices de tabela `tabela_equipes_trabalho`
@@ -326,11 +332,17 @@ ALTER TABLE `tabela_equipes_trabalho`
 -- Índices de tabela `tabela_membros`
 --
 ALTER TABLE `tabela_membros`
-  ADD PRIMARY KEY (`Codigo`);
+  ADD PRIMARY KEY (`codigo`);
 
 --
 -- AUTO_INCREMENT para tabelas despejadas
 --
+
+--
+-- AUTO_INCREMENT de tabela `funcoes_ecc`
+--
+ALTER TABLE `funcoes_ecc`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `tabela_cor_circulos`
@@ -348,30 +360,23 @@ ALTER TABLE `tabela_encontristas`
 -- AUTO_INCREMENT de tabela `tabela_encontros`
 --
 ALTER TABLE `tabela_encontros`
-  MODIFY `Codigo` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `tabela_equipes_funcoes`
---
-ALTER TABLE `tabela_equipes_funcoes`
-  MODIFY `Codigo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `codigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de tabela `tabela_membros`
 --
 ALTER TABLE `tabela_membros`
-  MODIFY `Codigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `codigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- Restrições para tabelas despejadas
 --
 
 --
--- Restrições para tabelas `tabela_circulos`
+-- Restrições para tabelas `tabela_ciclos`
 --
-ALTER TABLE `tabela_circulos`
-  ADD CONSTRAINT `tabela_circulos_ibfk_1` FOREIGN KEY (`Cod_Encontro`) REFERENCES `tabela_encontros` (`Codigo`),
-  ADD CONSTRAINT `tabela_circulos_ibfk_2` FOREIGN KEY (`Cod_Circulo`) REFERENCES `tabela_cor_circulos` (`Codigo`);
+ALTER TABLE `tabela_ciclos`
+  ADD CONSTRAINT `fk_membro_ciclo` FOREIGN KEY (`cod_membro`) REFERENCES `tabela_membros` (`Codigo`);
 
 --
 -- Restrições para tabelas `tabela_encontristas`
