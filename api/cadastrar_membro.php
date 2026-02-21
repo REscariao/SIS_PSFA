@@ -73,9 +73,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-    <header class="navbar">
+<header class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="logo">⛪ Minha<span>Paróquia</span></a>
+            <a href="#" class="logo"><img src="../img/logoParoquia.png" width="270" alt="Logo Paróquia"></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="membros.php">Membros do ECC</a></li>
+                    <li><a href="#"></a></li>
+                    <li>
+                    <a href="logout.php" class="btn-logout" title="Sair">
+                        <i class="fa-solid fa-power-off" style="color: #81693b;"></i>
+                    </a>    
+                    </li>
+                </ul>
+            </nav>
         </div>
     </header>
 
@@ -167,8 +178,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div style="margin-top: 30px;">
-                    <button type="submit" class="btn-save">✅ Concluir Cadastro</button>
-                    <a href="membros.php" class="btn-cancel">Voltar para a Lista</a>
+                    <button type="submit" class="btn-save">Concluir Cadastro</button>
+                    
                 </div>
             </form>
         </div>

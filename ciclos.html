@@ -8,59 +8,104 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Correção para os botões não passarem para o lado direito */
+        /* Filtros Coloridos */
         .filter-group { 
             display: flex; 
-            gap: 10px; 
+            gap: 12px; 
             margin-bottom: 30px; 
             flex-wrap: wrap; 
-            justify-content: flex-start;
+            justify-content: center;
         }
 
-        .filter-group .btn { 
-            min-width: 120px; 
-            flex: 1; 
-            max-width: 200px;
-            height: 45px;
-            font-size: 0.9rem;
+        .btn-filtro {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #fff;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        .btn-filtro:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+
+        .btn-amarelo { background-color: #FFFF00; color: #000 !important; text-shadow: none; }
+        .btn-azul { background-color: #0000FF; }
+        .btn-vermelho { background-color: #FF0000; }
+        .btn-verde { background-color: #008000; }
+        .btn-rosa { background-color: #FFC0CB; color: #000 !important; text-shadow: none; }
+        .btn-laranja { background-color: #FFA500; }
+        .btn-todos { background-color: #374151; }
+
+        /* Card do Coordenador */
+        #container-coordenador { margin-bottom: 25px; }
+
+        .coord-banner {
+            background: #ffffff;
+            border-left: 8px solid #81693b;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .coord-info h4 { margin: 0; color: #6b7280; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .coord-info p { margin: 5px 0 0; font-weight: 800; color: #111827; font-size: 1.2rem; }
 
         .badge-circulo { 
-            background: #81693b; 
-            color: white; 
-            padding: 6px 14px; 
-            border-radius: 20px; 
-            font-size: 0.8rem; 
-            font-weight: bold;
-            display: inline-block;
+            padding: 10px 18px; 
+            border-radius: 30px; 
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        .nome-casal { font-weight: 600; color: #1f2937; }
+        .nome-casal { font-weight: 600; color: #1f2937; font-size: 1.05rem; }
+        .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
 
-        /* Ajuste para tabelas em ecrãs pequenos */
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+        /* Mensagem de Seleção Inicial */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+            color: #d1d5db;
         }
 
-        @media (max-width: 600px) {
-            .filter-group .btn {
-                min-width: calc(50% - 10px);
-            }
+        @media (max-width: 768px) {
+            .coord-banner { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <header class="navbar">
+<header class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="logo">⛪ Minha<span>Paróquia</span></a>
+            <a href="dashboard.html" class="logo"><img src="img/logoParoquia.png" width="270" alt="Logo Paróquia"></a>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="dashboard.html">Início</a></li>
-                    <li><a href="trajetoria.html">Trajetória</a></li>
-                    <li><a href="ciclos.html" class="active">Círculos</a></li>
+                    <li><a href="secretaria.html">Secretária</a></li>
+                    <li><a href="#"></a></li>
+                    <li>
+                    <a href="logout.php" class="btn-logout" title="Sair">
+                        <i class="fa-solid fa-power-off" style="color: #81693b;"></i>
+                    </a>    
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -69,90 +114,117 @@
     <main class="content">
         <div class="form-card full-width">
             <header class="form-header">
-                <h2>Círculos Formados</h2>
-                <p>Histórico de casais participantes por círculo e encontro.</p>
+                <h2>Gestão de Círculos</h2>
+                <p>Histórico e acompanhamento das cores oficiais do ECC.</p>
             </header>
 
             <div class="filter-group">
-                <button onclick="carregarCiclos(1, this)" class="btn btn-outline">1º Círculo</button>
-                <button onclick="carregarCiclos(2, this)" class="btn btn-outline">2º Círculo</button>
-                <button onclick="carregarCiclos(3, this)" class="btn btn-outline">3º Círculo</button>
-                <button onclick="carregarCiclos('todos', this)" class="btn btn-primary">Ver Todos</button>
+                <button onclick="carregarCiclos(1, this)" class="btn-filtro btn-amarelo">Amarelo</button>
+                <button onclick="carregarCiclos(2, this)" class="btn-filtro btn-azul">Azul</button>
+                <button onclick="carregarCiclos(3, this)" class="btn-filtro btn-vermelho">Vermelho</button>
+                <button onclick="carregarCiclos(4, this)" class="btn-filtro btn-verde">Verde</button>
+                <button onclick="carregarCiclos(5, this)" class="btn-filtro btn-rosa">Rosa</button>
+                <button onclick="carregarCiclos('todos', this)" class="btn-filtro btn-todos">Ver Todos</button>
             </div>
 
-            <div class="table-container">
+            <div id="container-coordenador"></div>
+
+            <div class="table-container" id="tabela-container" style="display: none;">
                 <table class="modern-table" id="tabela-ciclos">
                     <thead>
                         <tr>
-                            <th>Nº Círculo</th>
-                            <th>Casal</th>
-                            <th>Encontro</th>
-                            <th>Ano/Período</th>
+                            <th>Casal Participante</th>
+                            <th>Evento / Encontro</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        </tbody>
+                    <tbody></tbody>
                 </table>
+            </div>
+
+            <div id="mensagem-inicial" class="empty-state">
+                <i class="fas fa-layer-group"></i>
+                <h3>Selecione um círculo acima</h3>
+                <p>Escolha uma cor para visualizar a coordenação e os casais participantes.</p>
             </div>
         </div>
     </main>
 
-    <footer class="footer" style="text-align: center; margin-top: 40px; padding: 20px; color: #6b7280; font-size: 0.8rem;">
-        <p>&copy; 2026 - ECC Santo Antônio - Patos-PB</p>
-    </footer>
-
     <script>
         async function carregarCiclos(filtro, btn) {
-            // Gerir as cores dos botões (Active state)
-            if (btn) {
-                document.querySelectorAll('.filter-group .btn').forEach(b => {
-                    b.classList.remove('btn-primary'); 
-                    b.classList.add('btn-outline');
-                });
-                btn.classList.add('btn-primary'); 
-                btn.classList.remove('btn-outline');
-            }
-
             const tbody = document.querySelector('#tabela-ciclos tbody');
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px;">Buscando dados da trajetória...</td></tr>';
+            const coordContainer = document.querySelector('#container-coordenador');
+            const tabelaContainer = document.querySelector('#tabela-container');
+            const mensagemInicial = document.querySelector('#mensagem-inicial');
+            
+            // Alterna a visibilidade dos containers
+            mensagemInicial.style.display = 'none';
+            tabelaContainer.style.display = 'block';
+            
+            tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Organizando círculos...</td></tr>';
+            coordContainer.innerHTML = ''; 
 
             try {
-                // Chamada à API (usando letras minúsculas conforme combinado)
                 const res = await fetch(`api/listar_ciclos_api.php?filtro=${filtro}`);
-                
-                if (!res.ok) throw new Error("Erro na resposta da API");
-                
                 const dados = await res.json();
                 tbody.innerHTML = '';
 
-                if (!dados || dados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Nenhum registro encontrado para este critério.</td></tr>';
+                if (dados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; padding: 20px;">Nenhum registro encontrado para esta seleção.</td></tr>';
                     return;
                 }
 
-                // Renderização usando as chaves minúsculas do JSON
+                // 1. Banner do Coordenador
+                const primeiro = dados[0];
+                const corHex = primeiro.cor_hex || '#81693b';
+                const textoCirculo = primeiro.nome_circulo || `${primeiro.cod_circulo}º Círculo`;
+                const nomeCoord = (primeiro.coord_ele) ? `${primeiro.coord_ele} & ${primeiro.coord_ela}` : `ID Coordenador: ${primeiro.cod_coord}`;
+
+                coordContainer.innerHTML = `
+                    <div class="coord-banner" style="border-left-color: ${corHex}">
+                        <div class="badge-circulo" style="background-color: ${corHex}; color: ${getContrastYIQ(corHex)}">
+                            ${textoCirculo}
+                        </div>
+                        <div class="coord-info">
+                            <h4>Casal Coordenador</h4>
+                            <p>${nomeCoord}</p>
+                        </div>
+                    </div>
+                `;
+
+                // 2. Tabela de Membros
                 dados.forEach(item => {
                     const tr = document.createElement('tr');
+                    const nomeCasal = (item.membro_ele) ? `${item.membro_ele} & ${item.membro_ela}` : `ID Membro: ${item.cod_membro}`;
+
                     tr.innerHTML = `
-                        <td><span class="badge-circulo">${item.cod_circulo}º Círculo</span></td>
-                        <td class="nome-casal">${item.ele} & ${item.ela}</td>
-                        <td>${item.encontro}</td>
-                        <td><strong>${item.periodo}</strong></td>
+                        <td class="nome-casal">
+                            <i class="fa-solid fa-user-group" style="color: ${corHex}; margin-right: 12px; opacity: 0.7;"></i>
+                            ${nomeCasal}
+                        </td>
+                        <td>
+                            <strong>${item.encontro}</strong><br>
+                            <small style="color: #6b7280;">${item.periodo}</small>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
 
             } catch (e) {
-                console.error("Erro no fetch:", e);
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red; padding: 20px;">Não foi possível carregar os dados. Verifique a ligação.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:red; padding: 20px;">Erro técnico ao carregar.</td></tr>';
             }
         }
 
-        // Inicia a página listando tudo
-        window.addEventListener('DOMContentLoaded', () => {
-            const btnTodos = document.querySelector('.btn-primary');
-            carregarCiclos('todos', btnTodos);
-        });
+        function getContrastYIQ(hexcolor){
+            if(!hexcolor || hexcolor.length < 6) return 'white';
+            hexcolor = hexcolor.replace("#", "");
+            var r = parseInt(hexcolor.substr(0,2),16);
+            var g = parseInt(hexcolor.substr(2,2),16);
+            var b = parseInt(hexcolor.substr(4,2),16);
+            var yiq = ((r*299)+(g*587)+(b*114))/1000;
+            return (yiq >= 128) ? 'black' : 'white';
+        }
+        
+        // Removido o window.onload automático para começar limpo
     </script>
 </body>
 </html>
