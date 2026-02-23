@@ -5,9 +5,9 @@
 // Configurações do Banco de Dados
 // Dica: Futuramente, mova isso para um arquivo .env por segurança
 $host = 'localhost';
-$db   = 'banco_ecc_santoantonio';
-$user = 'root';
-$pass = '';
+$db   = 'rodr5715_banco_ecc_santoantonioo';
+$user = 'rodr5715_sys_psfa';
+$pass = 'Xu391028*16';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
