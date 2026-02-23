@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema Paroquial</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-logo">⛪</div>
+                <h1>Acesso ao Sistema</h1>
+                <p>Gestão Paroquial Inteligente</p>
+            </div>
+
+            <form action="index.html" class="main-form">
+                <div class="form-section">
+                    <label>E-mail ou Usuário</label>
+                    <input type="text" name="usuario" placeholder="Digite seu acesso" required>
+                </div>
+
+                <div class="form-section">
+                    <label>Senha</label>
+                    <input type="password" name="senha" placeholder="••••••••" required>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox"> Lembrar de mim
+                    </label>
+                    <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Entrar no Sistema</button>
+            </form>
+        </div>
+        
+        <div class="login-footer">
+            <p>&copy; 2026 - Paróquia Santo Antônio</p>
+        </div>
+    </div>
+<script src="js/api.js"></script>
+<script>
+    document.querySelector('.main-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = this.usuario.value;
+        const senha = this.senha.value;
+        realizarLogin(email, senha); // Chama a função que está no api.js
+    });
+</script>
+</body>
+</html>

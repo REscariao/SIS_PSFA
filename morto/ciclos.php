@@ -1,3 +1,379 @@
+<<<<<<< HEAD
+<?php
+require_once 'api/db.php';
+
+// 1. Busca o último encontro para saber de qual evento estamos falando
+$stmt_encontro = $pdo->query("SELECT Codigo, Encontro, Periodo FROM tabela_encontros ORDER BY Codigo DESC LIMIT 1");
+$encontro = $stmt_encontro->fetch(PDO::FETCH_ASSOC);
+
+if (!$encontro) {
+    die("Nenhum encontro cadastrado.");
+}
+
+// 2. Busca os casais agrupados por círculo
+$sql = "SELECT 
+            C.Circulo AS cor_nome, 
+            C.CorHex,
+            M.Ele, M.Ela, 
+            M.Apelido_dele, M.Apelido_dela
+        FROM Tabela_Encontristas TE 
+        JOIN Tabela_Membros M ON TE.Cod_Membros = M.Codigo 
+        JOIN Tabela_Encontros E ON TE.Cod_Encontro = E.Codigo
+        LEFT JOIN Tabela_Cor_Circulos C ON TE.Cod_Circulo = C.Codigo 
+        WHERE TE.Cod_Encontro = ? 
+        ORDER BY C.Circulo, M.Ele ASC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute([$encontro['Codigo']]);
+$dados = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC); 
+?>
+
+=======
+<<<<<<<< HEAD:ciclos.php
+>>>>>>> 83776864ccebc41a8f0430e1d4a061408e652141
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+<<<<<<< HEAD
+    <title>Círculos Montados - ECC</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .grid-ciclos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .card-ciclo {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        .ciclo-header {
+            padding: 15px 20px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .count-badge {
+            background: rgba(0,0,0,0.15);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+        .lista-casais {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .lista-casais li {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .lista-casais li:last-child { border-bottom: none; }
+        .nome-real { font-weight: 600; color: #333; }
+        .apelidos { color: #777; font-size: 0.85rem; margin-top: 2px; }
+        
+        /* Estilização do Topo */
+        .encontro-banner {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .encontro-banner h1 { margin: 0; color: #1a237e; font-size: 1.8rem; }
+        .encontro-banner p { margin: 10px 0 0; color: #555; font-weight: 600; }
+=======
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Círculos do Encontro - ECC</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Filtros Coloridos */
+        .filter-group { 
+            display: flex; 
+            gap: 12px; 
+            margin-bottom: 30px; 
+            flex-wrap: wrap; 
+            justify-content: center;
+        }
+
+        .btn-filtro {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #fff;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-filtro:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+
+        .btn-amarelo { background-color: #FFFF00; color: #000 !important; text-shadow: none; }
+        .btn-azul { background-color: #0000FF; }
+        .btn-vermelho { background-color: #FF0000; }
+        .btn-verde { background-color: #008000; }
+        .btn-rosa { background-color: #FFC0CB; color: #000 !important; text-shadow: none; }
+        .btn-laranja { background-color: #FFA500; }
+        .btn-todos { background-color: #374151; }
+
+        /* Card do Coordenador */
+        #container-coordenador { margin-bottom: 25px; }
+
+        .coord-banner {
+            background: #ffffff;
+            border-left: 8px solid #81693b;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .coord-info h4 { margin: 0; color: #6b7280; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .coord-info p { margin: 5px 0 0; font-weight: 800; color: #111827; font-size: 1.2rem; }
+
+        .badge-circulo { 
+            padding: 10px 18px; 
+            border-radius: 30px; 
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .nome-casal { font-weight: 600; color: #1f2937; font-size: 1.05rem; }
+        .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
+
+        /* Mensagem de Seleção Inicial */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+            color: #d1d5db;
+        }
+
+        @media (max-width: 768px) {
+            .coord-banner { flex-direction: column; text-align: center; }
+        }
+>>>>>>> 83776864ccebc41a8f0430e1d4a061408e652141
+    </style>
+</head>
+<body>
+
+<<<<<<< HEAD
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">⛪ Minha<span>Paróquia</span></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="encontros.html">Encontros</a></li>
+                    <li><a href="#" class="active">Círculos</a></li>
+=======
+        <header class="navbar">
+        <div class="nav-container">
+            <a href="dashboard.html" class="logo"><img src="img/logoParoquia.png" width="160" alt="Logo Paróquia"></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="secretaria.php">Secretária</a></li>
+                    <li><a href="#"></a></li>
+                    <li>
+                        <a href="api/logout.php" class="logout-btnlogout-btn" title="Sair do Sistema">Logout
+                            <i class="fa-solid fa-power-off"></i>
+                        </a>
+                    </li>
+>>>>>>> 83776864ccebc41a8f0430e1d4a061408e652141
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content">
+<<<<<<< HEAD
+
+
+        <div class="grid-ciclos">
+                    <div class="encontro-banner">
+            <h1><?php echo $encontro['Encontro']; ?></h1>
+            <p>📅 <?php echo $encontro['Periodo']; ?></p>
+        </div>
+            <?php foreach ($dados as $cor => $casais): 
+                $corFundo = $casais[0]['CorHex'] ?? '#333';
+                $corTexto = (strtoupper($cor) == 'AMARELO') ? '#000' : '#fff';
+            ?>
+                <div class="card-ciclo">
+                    <div class="ciclo-header" style="background-color: <?php echo $corFundo; ?>; color: <?php echo $corTexto; ?>;">
+                        <span>Círculo <?php echo $cor; ?></span>
+                        <span class="count-badge"><?php echo count($casais); ?> Casais</span>
+                    </div>
+                    <div class="ciclo-body">
+                        <ul class="lista-casais">
+                            <?php foreach ($casais as $c): ?>
+                                <li>
+                                    <span class="nome-real"><?php echo $c['Ele']; ?> & <?php echo $c['Ela']; ?></span>
+                                    <span class="apelidos"><?php echo $c['Apelido_dele']; ?> / <?php echo $c['Apelido_dela']; ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 - Gestão Paroquial Inteligente | ECC Patos-PB</p>
+    </footer>
+
+</body>
+=======
+        <div class="form-card full-width">
+            <header class="form-header">
+                <h2>Gestão de Círculos</h2>
+                <p>Histórico e acompanhamento das cores oficiais do ECC.</p>
+            </header>
+
+            <div class="filter-group">
+                <button onclick="carregarCiclos(1, this)" class="btn-filtro btn-amarelo">Amarelo</button>
+                <button onclick="carregarCiclos(2, this)" class="btn-filtro btn-azul">Azul</button>
+                <button onclick="carregarCiclos(3, this)" class="btn-filtro btn-vermelho">Vermelho</button>
+                <button onclick="carregarCiclos(4, this)" class="btn-filtro btn-verde">Verde</button>
+                <button onclick="carregarCiclos(5, this)" class="btn-filtro btn-rosa">Rosa</button>
+                <button onclick="carregarCiclos('todos', this)" class="btn-filtro btn-todos">Ver Todos</button>
+            </div>
+
+            <div id="container-coordenador"></div>
+
+            <div class="table-container" id="tabela-container" style="display: none;">
+                <table class="modern-table" id="tabela-ciclos">
+                    <thead>
+                        <tr>
+                            <th>Casal Participante</th>
+                            <th>Evento / Encontro</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="mensagem-inicial" class="empty-state">
+                <i class="fas fa-layer-group"></i>
+                <h3>Selecione um círculo acima</h3>
+                <p>Escolha uma cor para visualizar a coordenação e os casais participantes.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function carregarCiclos(filtro, btn) {
+            const tbody = document.querySelector('#tabela-ciclos tbody');
+            const coordContainer = document.querySelector('#container-coordenador');
+            const tabelaContainer = document.querySelector('#tabela-container');
+            const mensagemInicial = document.querySelector('#mensagem-inicial');
+            
+            // Alterna a visibilidade dos containers
+            mensagemInicial.style.display = 'none';
+            tabelaContainer.style.display = 'block';
+            
+            tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Organizando círculos...</td></tr>';
+            coordContainer.innerHTML = ''; 
+
+            try {
+                const res = await fetch(`api/listar_ciclos_api.php?filtro=${filtro}`);
+                const dados = await res.json();
+                tbody.innerHTML = '';
+
+                if (dados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; padding: 20px;">Nenhum registro encontrado para esta seleção.</td></tr>';
+                    return;
+                }
+
+                // 1. Banner do Coordenador
+                const primeiro = dados[0];
+                const corHex = primeiro.cor_hex || '#81693b';
+                const textoCirculo = primeiro.nome_circulo || `${primeiro.cod_circulo}º Círculo`;
+                const nomeCoord = (primeiro.coord_ele) ? `${primeiro.coord_ele} & ${primeiro.coord_ela}` : `ID Coordenador: ${primeiro.cod_coord}`;
+
+                coordContainer.innerHTML = `
+                    <div class="coord-banner" style="border-left-color: ${corHex}">
+                        <div class="badge-circulo" style="background-color: ${corHex}; color: ${getContrastYIQ(corHex)}">
+                            ${textoCirculo}
+                        </div>
+                        <div class="coord-info">
+                            <h4>Casal Coordenador</h4>
+                            <p>${nomeCoord}</p>
+                        </div>
+                    </div>
+                `;
+
+                // 2. Tabela de Membros
+                dados.forEach(item => {
+                    const tr = document.createElement('tr');
+                    const nomeCasal = (item.membro_ele) ? `${item.membro_ele} & ${item.membro_ela}` : `ID Membro: ${item.cod_membro}`;
+
+                    tr.innerHTML = `
+                        <td class="nome-casal">
+                            <i class="fa-solid fa-user-group" style="color: ${corHex}; margin-right: 12px; opacity: 0.7;"></i>
+                            ${nomeCasal}
+                        </td>
+                        <td>
+                            <strong>${item.encontro}</strong><br>
+                            <small style="color: #6b7280;">${item.periodo}</small>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:red; padding: 20px;">Erro técnico ao carregar.</td></tr>';
+            }
+        }
+
+        function getContrastYIQ(hexcolor){
+            if(!hexcolor || hexcolor.length < 6) return 'white';
+            hexcolor = hexcolor.replace("#", "");
+            var r = parseInt(hexcolor.substr(0,2),16);
+            var g = parseInt(hexcolor.substr(2,2),16);
+            var b = parseInt(hexcolor.substr(4,2),16);
+            var yiq = ((r*299)+(g*587)+(b*114))/1000;
+            return (yiq >= 128) ? 'black' : 'white';
+        }
+        
+        // Removido o window.onload automático para começar limpo
+    </script>
+</body>
+========
 <?php
 require_once 'api/db.php';
 
@@ -146,4 +522,6 @@ $dados = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
     </footer>
 
 </body>
+>>>>>>>> 83776864ccebc41a8f0430e1d4a061408e652141:morto/ciclos.php
+>>>>>>> 83776864ccebc41a8f0430e1d4a061408e652141
 </html>

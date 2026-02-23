@@ -111,6 +111,7 @@ button[type="reset"],
     color: #ef4444 !important; /* Muda para vermelho ao passar o mouse */
 }
 
+<<<<<<< HEAD
 .logout-btnlogout-btn {
             background-color: #836a3b;
             color: white !important; 
@@ -124,6 +125,9 @@ button[type="reset"],
 .logout-btnlogout-btn:hover {
            background-color: #503400;
   }
+=======
+
+>>>>>>> 83776864ccebc41a8f0430e1d4a061408e652141
 /* ==========================================================================
    LAYOUT DE CONTEÚDO E CARDS
    ========================================================================== */
