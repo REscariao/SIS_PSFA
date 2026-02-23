@@ -6,10 +6,10 @@ header('Content-Type: application/json; charset=utf-8');
 
 try {
     // Busca apenas círculos ativos
-    $sql = "SELECT Codigo as id, Circulo as nome_circulo 
-            FROM Tabela_Cor_Circulos 
-            WHERE Ativo = 1 
-            ORDER BY Circulo ASC";
+    $sql = "SELECT codigo as id, circulo as nome_circulo 
+            FROM tabela_cor_circulos 
+            WHERE ativo = 1 
+            ORDER BY circulo ASC";
             
     $stmt = $pdo->query($sql);
     $circulos = $stmt->fetchAll(PDO::FETCH_ASSOC);

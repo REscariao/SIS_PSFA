@@ -1,34 +1,34 @@
 <?php
-// Inclui a conexão com o banco
 require_once 'db.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
 try {
-    // Query para buscar os dados dos encontristas vinculados ao encontro
-    // Note que buscamos o Encontro, Nomes Reais e os Apelidos
-    // api/listar_vivenciando_api.php
-$sql = "SELECT 
-            TE.Cod_Encontro AS cod_encontro,
-            TE.Cod_Membros AS cod_membro,
-            E.Encontro AS nome_encontro,
-            M.Ele AS ele_nome,
-            M.Ela AS ela_nome,
-            M.Apelido_dele AS ele_apelido,
-            M.Apelido_dela AS ela_apelido,
-            C.Circulo AS cor_nome -- Adicionado
-        FROM Tabela_Encontristas TE
-        INNER JOIN Tabela_Membros M ON TE.Cod_Membros = M.Codigo
-        INNER JOIN Tabela_Encontros E ON TE.Cod_Encontro = E.Codigo
-        LEFT JOIN Tabela_Cor_Circulos C ON TE.Cod_Circulo = C.Codigo -- Join com círculos
-        WHERE E.Periodo LIKE '%2026%'
-        ORDER BY M.Ele ASC";
+    // Adicionamos c.cor para pegar o hexadecimal que cadastramos no banco
+    $sql = "SELECT 
+            te.cod_encontro,
+            te.cod_membros,
+            e.encontro, 
+            m.ele AS ele_nome,
+            m.ela AS ela_nome,
+            m.apelido_dele AS ele_apelido,
+            m.apelido_dela AS ela_apelido,
+            c.circulo AS cor_nome,
+            c.cor AS cor_hex 
+        FROM tabela_encontristas te
+        INNER JOIN tabela_membros m ON te.cod_membros = m.codigo
+        INNER JOIN tabela_encontros e ON te.cod_encontro = e.codigo
+        LEFT JOIN tabela_cor_circulos c ON te.cod_circulo = c.codigo
+        WHERE e.periodo LIKE '%2026%'
+        ORDER BY m.ele ASC";
 
     $stmt = $pdo->query($sql);
-    $encontristas = $stmt->fetchAll();
+    // FETCH_ASSOC evita duplicidade de dados no JSON
+    $encontristas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode($encontristas);
 
 } catch (PDOException $e) {
+    http_response_code(500);
     echo json_encode(['erro' => $e->getMessage()]);
 }

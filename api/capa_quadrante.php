@@ -20,9 +20,9 @@ try {
     if (!$encontro) die("Nenhum encontro encontrado no sistema.");
 
     // Prepara as variáveis para o layout
-    $partes = explode(' ', $encontro['Encontro']);
+    $partes = explode(' ', $encontro['encontro']);
     $numero = $partes[0] . ' - E.C.C.';
-    $periodo = $encontro['Periodo'];
+    $periodo = $encontro['periodo'];
 
 } catch (PDOException $e) {
     die("Erro: " . $e->getMessage());

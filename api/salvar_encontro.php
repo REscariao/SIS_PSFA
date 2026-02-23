@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         echo "<script>
                 alert('Encontro registrado com sucesso!'); 
-                window.location.href='../encontros.html';
+                window.location.href='../secretaria.php';
               </script>";
 
     } catch (PDOException $e) {
